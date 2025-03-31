@@ -1,11 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-import sys
-import os
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
-from storage_data_program import User, Query, DataStorage, Record
+from src.storage import User, Query, DataStorage, Record
 
 class TestUser(unittest.TestCase):
     def setUp(self):
