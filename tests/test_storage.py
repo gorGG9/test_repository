@@ -1,12 +1,11 @@
 import unittest
 from unittest.mock import MagicMock
-try:
-    from src.storage import User, Query, DataStorage, Record
-except ImportError:
-    import sys
-    from pathlib import Path
-    sys.path.append(str(Path(__file__).parent.parent))
-    from src.storage import User, Query, DataStorage, Record
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
+from storage import User, Query, DataStorage, Record
 
 class TestUser(unittest.TestCase):
     def setUp(self):
