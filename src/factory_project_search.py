@@ -1,3 +1,6 @@
+FULLTEXT = "fulltext"
+INDEX = "index"
+
 class FullTextSearch:
     def search(self, query):
         # Возвращает результаты полнотекстового поиска
@@ -10,24 +13,19 @@ class IndexSearch:
 
 class SearchFactory:
     @staticmethod
-    def create_search(type):
+    def create_search(search_type: str) -> object:
         # В зависимости от типа создаем соответствующий объект поиска
-        if type == "fulltext":
+        if search_type == FULLTEXT:
             return FullTextSearch()
-        elif type == "index":
+        elif search_type == INDEX:
             return IndexSearch()
         else:
             # Если тип неизвестен, выбрасываем исключение
             raise ValueError("Unknown search type")
 
-# Проверка работы Factory
-factory = SearchFactory()
-
-# Создаем объект для полнотекстового поиска
-search1 = factory.create_search("fulltext")
-# Создаем объект для поиска по индексу
-search2 = factory.create_search("index")
-
-# Используем созданные объекты для поиска
-print(search1.search("data"))  # Вывод: Full-text search results for 'data'
-print(search2.search("data"))  # Вывод: Index search results for 'data'
+if __name__ == "__main__":
+    factory = SearchFactory()
+    search1 = factory.create_search(FULLTEXT)
+    search2 = factory.create_search(INDEX)
+    print(search1.search("data"))
+    print(search2.search("data"))

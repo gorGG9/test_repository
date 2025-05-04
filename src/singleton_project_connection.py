@@ -1,3 +1,5 @@
+DEFAULT_CONNECTION_STATUS = "Database Connection Established"
+
 class DatabaseConnection:
     # Статическая переменная для хранения единственного экземпляра
     _instance = None
@@ -7,19 +9,18 @@ class DatabaseConnection:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             # Инициализируем подключение к базе данных
-            cls._instance.connection = "Database Connection Established"
+            cls._instance._connection = DEFAULT_CONNECTION_STATUS
         # Возвращаем единственный экземпляр
         return cls._instance
 
     # Метод для получения подключения
-    def get_connection(self):
-        return self.connection
+    @property
+    def connection(self) -> str:
+        return self._connection
 
-# Проверка работы Singleton
-db1 = DatabaseConnection()
-db2 = DatabaseConnection()
-
-# Оба объекта db1 и db2 ссылаются на один и тот же экземпляр
-print(db1.get_connection())  # Вывод: Database Connection Established
-print(db2.get_connection())  # Вывод: Database Connection Established
-print(db1 is db2)            # Вывод: True (это один и тот же объект)
+if __name__ == "__main__":
+    db1 = DatabaseConnection()
+    db2 = DatabaseConnection()
+    print(db1.connection())
+    print(db2.connection())
+    print(db1 is db2)

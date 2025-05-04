@@ -1,6 +1,9 @@
 from elasticsearch import Elasticsearch
 import requests
 
+DEFAULT_INDEX = 'default_index'
+DEFAULT_ENDPOINT = 'search'
+
 class ElasticsearchAdapter(ExternalServiceAdapter):
     def __init__(self, host: str, port: int):
         self.client = Elasticsearch([{'host': host, 'port': port}])
@@ -10,7 +13,7 @@ class ElasticsearchAdapter(ExternalServiceAdapter):
             raise ConnectionError("Не удалось подключиться к Elasticsearch")
 
     def search(self, query: str, **kwargs):
-        index = kwargs.get('index', 'default_index')
+        index = kwargs.get('index', DEFAULT_INDEX)
         body = {
             "query": {
                 "match": {
@@ -21,7 +24,7 @@ class ElasticsearchAdapter(ExternalServiceAdapter):
         return self.client.search(index=index, body=body)
 
     def index_data(self, data: dict, **kwargs):
-        index = kwargs.get('index', 'default_index')
+        index = kwargs.get('index', DEFAULT_INDEX)
         return self.client.index(index=index, body=data)
 
     def close(self):
@@ -29,6 +32,8 @@ class ElasticsearchAdapter(ExternalServiceAdapter):
 
 class RestApiAdapter(ExternalServiceAdapter):
     def __init__(self, base_url: str):
+        if not base_url:
+            raise ValueError("Base URL не может быть пустым.")
         self.base_url = base_url
 
     def connect(self, **kwargs):
@@ -37,7 +42,7 @@ class RestApiAdapter(ExternalServiceAdapter):
             raise ConnectionError("Не удалось подключиться к REST API")
 
     def search(self, query: str, **kwargs):
-        endpoint = kwargs.get('endpoint', 'search')
+        endpoint = kwargs.get('endpoint', DEFAULT_ENDPOINT)
         params = {'query': query}
         response = requests.get(f"{self.base_url}/{endpoint}", params=params)
         return response.json()
@@ -48,7 +53,8 @@ class RestApiAdapter(ExternalServiceAdapter):
         return response.json()
 
     def close(self):
-        pass  # REST API не требует закрытия соединения
+        """Закрытие не требуется для HTTP соединения."""
+        pass
 
 def main():
     # Использование ElasticsearchAdapter
@@ -63,7 +69,7 @@ def main():
     rest_adapter = RestApiAdapter(base_url="")
     rest_adapter.connect()
     rest_adapter.index_data({"content": "Пример данных для индексации"}, endpoint="data")
-    results = rest_adapter.search("Пример", endpoint="search")
+    results = rest_adapter.search("Пример", endpoint=DEFAULT_ENDPOINT)
     print(results)
     rest_adapter.close()
 
