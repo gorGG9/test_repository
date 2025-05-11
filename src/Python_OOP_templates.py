@@ -57,6 +57,9 @@ class FastSearchStorage(DataStorage):
                 high = mid - 1
         return None
 
+def test_function():
+    print("test function, release soon")
+
 
 # Пример использования
 if __name__ == "__main__":
@@ -71,3 +74,5 @@ if __name__ == "__main__":
     fast_storage.add_data("apple")
     fast_storage.add_data("banana")
     print(fast_storage.search_data("apple"))
+    
+    test_function()
